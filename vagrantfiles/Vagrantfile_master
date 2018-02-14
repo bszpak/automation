@@ -1,0 +1,26 @@
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define "burnin" do |burnin|
+    burnin.vm.box = "centos/7"
+    burnin.vm.network :forwarded_port, guest: 22, host: 5022, id: 'ssh'
+  end
+
+  config.vm.define "videorouter" do |videorouter|
+    videorouter.vm.box = "centos/7"
+    videorouter.vm.network :forwarded_port, guest: 22, host: 5122, id: 'ssh'
+  end
+
+  config.vm.define "ip2a" do |ip2a|
+    ip2a.vm.box = "ubuntu/precise64"
+    ip2a.vm.network :forwarded_port, guest: 22, host: 5222, id: 'ssh'
+  end
+
+  config.vm.network "public_network", type: "dhcp"
+#  config.vm.provision "shell", path: "./configure_local.sh"
+  
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 1536
+  end  
+  
+end

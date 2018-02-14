@@ -1,0 +1,25 @@
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  if Vagrant.has_plugin?("vagrant-cachier")
+    config.cache.enable :apt
+    config.cache.auto_detect = false
+  end
+  config.vm.box = "ubuntu/precise64"
+  config.vm.network "public_network"
+#  config.vm.network :public_network, bridge: "enp130s0f0", ip: "10.1.1.41", netmask: "255.255.252.0"
+#  config.vm.network :private_network, ip: "10.11.12.30"
+#  config.vm.network "forwarded_port", guest: 22, host: 10030
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
+    vb.customize ["modifyvm", :id, "--cpus", "2"]
+    vb.memory = "1024"
+#    vb.gui = true
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    adduser atxproduct
+    usermod -a -G admin atxproduct
+    echo "atxproduct:atxpassword" | chpasswd
+    sed -i -e 's|^PasswordAuthentication.*|PasswordAuthentication yes|' /etc/ssh/sshd_config
+    /etc/init.d/ssh restart
+  SHELL
+end
