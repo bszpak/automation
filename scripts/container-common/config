@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Update the CNTR_NAME and _PORT index based on unique entry in ../common.conf
+ 
+source ../common.conf
+NAME=${CNTR_NAME[0]}-tests
+PORT=${CNTR_PORT[0]}
